@@ -1,25 +1,16 @@
 def load_automata(filename):
-    """
-    Lê os dados de um autômato finito a partir de um arquivo.
-    ...
-    """
     try:
         with open(filename, "rt") as arquivo:
             lines = arquivo.readlines()
         
-        # Ler o alfabeto
         alphabet = lines[0].strip().split()
         
-        # Ler os estados
         states = lines[1].strip().split()
         
-        # Ler os estados finais
         final_states = lines[2].strip().split()
         
-        # Ler o estado inicial
         initial_state = lines[3].strip()
         
-        # Ler as regras de transição
         transitions = {}
         for line in lines[4:]:
             origin, symbol, destination = line.strip().split()
@@ -39,10 +30,6 @@ def load_automata(filename):
         raise Exception("Erro ao ler o arquivo do autômato: " + str(e))
 
 def process(automata, words):
-    """
-    Processa a lista de palavras e retorna o resultado.
-    Os resultados válidos são ACEITA, REJEITA, INVALIDA.
-    """
     def process_word(word):
         current_state = automata['initial_state']
         for symbol in word:
