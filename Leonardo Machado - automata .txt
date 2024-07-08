@@ -1,0 +1,61 @@
+def load_automata(filename):
+    """
+    Lê os dados de um autômato finito a partir de um arquivo.
+    ...
+    """
+    try:
+        with open(filename, "rt") as arquivo:
+            lines = arquivo.readlines()
+        
+        # Ler o alfabeto
+        alphabet = lines[0].strip().split()
+        
+        # Ler os estados
+        states = lines[1].strip().split()
+        
+        # Ler os estados finais
+        final_states = lines[2].strip().split()
+        
+        # Ler o estado inicial
+        initial_state = lines[3].strip()
+        
+        # Ler as regras de transição
+        transitions = {}
+        for line in lines[4:]:
+            origin, symbol, destination = line.strip().split()
+            if (origin, symbol) not in transitions:
+                transitions[(origin, symbol)] = []
+            transitions[(origin, symbol)].append(destination)
+        
+        return {
+            "alphabet": alphabet,
+            "states": states,
+            "final_states": final_states,
+            "initial_state": initial_state,
+            "transitions": transitions
+        }
+    
+    except Exception as e:
+        raise Exception("Erro ao ler o arquivo do autômato: " + str(e))
+
+def process(automata, words):
+    """
+    Processa a lista de palavras e retorna o resultado.
+    Os resultados válidos são ACEITA, REJEITA, INVALIDA.
+    """
+    def process_word(word):
+        current_state = automata['initial_state']
+        for symbol in word:
+            if symbol not in automata['alphabet']:
+                return "INVALIDA"
+            key = (current_state, symbol)
+            if key not in automata['transitions']:
+                return "REJEITA"
+            current_state = automata['transitions'][key][0]  # Supondo determinístico
+        return "ACEITA" if current_state in automata['final_states'] else "REJEITA"
+    
+    results = []
+    for word in words:
+        results.append(process_word(word))
+    
+    return results
